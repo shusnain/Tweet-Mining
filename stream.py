@@ -1,6 +1,6 @@
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler, Stream
-import auth as ath
+import global_var as gv
 
 class StdOutListener(StreamListener):
 
@@ -16,9 +16,12 @@ if __name__ == '__main__':
 
     #This handles Twitter authetification and the connection to Twitter Streaming API
     l = StdOutListener()
-    auth = OAuthHandler(ath.CONSUMER_KEY, ath.CONSUMER_SECRET)
-    auth.set_access_token(ath.OAUTH_TOKEN, ath.OAUTH_TOKEN_SECRET)
+    auth = OAuthHandler(gv.twitter_consumer_key, gv.twitter_consumer_secret)
+    auth.set_access_token(gv.twitter_oauth_token, gv.twitter_oauth_token_secret)
     stream = Stream(auth, l)
 
+    q1 = ['OKC', 'GSW', 'Thunder', 'Warriors', 'OKCvsGSW', 'GSWvsOKC']
+    q2 = ['#'+s for s in q1]
+    query = q1 + q2
     #This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'
-    stream.filter(track=['raptors', 'cavs', '#raptors', '#cavs', '#raptorsvscavs', '#TORvsCLE', '#CLEvsTOR', '#ECF'])
+    stream.filter(track=query)

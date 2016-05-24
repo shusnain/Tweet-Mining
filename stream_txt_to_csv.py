@@ -2,29 +2,44 @@ import json
 from csv import writer
 import pandas as pd
 import sys
+import global_var as gv
+
+def classify_teams(texts, team1, team2):
+	team = []
+	for text in texts:
+		text = text.lower()
+		if (any(s in text for s in team1) and any(s in text for s in team2)):
+			team.append(3)
+		elif any(s in text for s in team1):
+			team.append(1)
+		elif any(s in text for s in team2):
+			team.append(2)
+		else:
+			team.append(0)
+	return team
 
 args = sys.argv
 
 tweets = []
 
-for line in open(args[1]):
+for line in open(gv.data_path + args[1]):
   try: 
     tweets.append(json.loads(line))
   except:
     pass
 
-ids = [tweet['id_str'] for tweet in tweets]
-langs = [tweet['lang'] for tweet in tweets]
-texts = [tweet['text'] for tweet in tweets]
-timestamps = [tweet['timestamp_ms'] for tweet in tweets]
-times = [tweet['created_at'] for tweet in tweets]
-retweets = [tweet['retweet_count'] for tweet in tweets]
+ids = [tweet['id_str'] for tweet in tweets if 'id_str' in tweet]
+langs = [tweet['lang'] for tweet in tweets if 'lang' in tweet]
+texts = [tweet['text'] for tweet in tweets if 'text' in tweet]
+timestamps = [tweet['timestamp_ms'] for tweet in tweets if 'timestamp_ms' in tweet]
+times = [tweet['created_at'] for tweet in tweets if 'created_at' in tweet]
+retweets = [tweet['retweet_count'] for tweet in tweets if 'retweet_count' in tweet]
 
 # user-specific
-screen_names = [tweet['user']['screen_name'] for tweet in tweets]
-names = [tweet['user']['name'] for tweet in tweets]
+screen_names = [tweet['user']['screen_name'] for tweet in tweets if 'user' in tweet]
+names = [tweet['user']['name'] for tweet in tweets if 'user' in tweet]
 
-out = open(args[2], 'w', newline='')
+out = open(gv.data_path + args[2], 'w', newline='')
 
 rows = zip(ids, langs, texts, timestamps, times, retweets, screen_names, names)
 
@@ -37,21 +52,32 @@ for row in rows:
 out.close()
 
 # remove 'b need to fix!! inefficient!!
-df = pd.read_csv(args[2])
-ids = [i[2:-1] for i in df['id']]
-langs = [i[2:-1] for i in df['lang']]
-texts = [i[2:-1] for i in df['text']]
-timestamps = [i[2:-1] for i in df['timestamp_ms']]
-times = [i[2:-1] for i in df['created_at']]
-screen_names = [i[2:-1] for i in df['screen_name']]
-names = [i[2:-1] for i in df['name']]
+df = pd.read_csv(gv.data_path + args[2])
+ids = [tweet[2:-1] for tweet in df['id']]
+langs = [tweet[2:-1] for tweet in df['lang']]
+texts = [tweet[2:-1] for tweet in df['text']]
+timestamps = [tweet[2:-1] for tweet in df['timestamp_ms']]
+times = [tweet[2:-1] for tweet in df['created_at']]
+screen_names = [tweet[2:-1] for tweet in df['screen_name']]
+names = [tweet[2:-1] for tweet in df['name']]
 
-out = open(args[2], 'w', newline='')
+# teams mentioned in each tweet
+t1 = ['okc', 'thunder']
+t1_h = ['#'+s for s in t1]
+team1 = t1 + t1_h
 
-rows = zip(ids, langs, texts, timestamps, times, retweets, screen_names, names)
+t2 = ['gsw', 'warriors']
+t2_h = ['#'+s for s in t2]
+team2 = t2 + t2_h
+
+teams_mentioned = classify_teams(texts, team1, team2)
+
+out = open(gv.data_path + args[2], 'w', newline='')
+
+rows = zip(ids, langs, texts, timestamps, times, retweets, screen_names, names, teams_mentioned)
 
 csv = writer(out)
-csv.writerow(['id', 'lang', 'text', 'timestamp_ms', 'created_at', 'retweet_count', 'screen_name', 'name'])
+csv.writerow(['id', 'lang', 'text', 'timestamp_ms', 'created_at', 'retweet_count', 'screen_name', 'name', 'teams_mentioned'])
 for row in rows:
 	values = [value for value in row]
 	csv.writerow(values)
