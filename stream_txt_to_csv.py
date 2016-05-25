@@ -1,6 +1,7 @@
 import json
 from csv import writer
 import pandas as pd
+import tweets_sentiment
 import sys
 import global_var as gv
 
@@ -60,6 +61,7 @@ timestamps = [tweet[2:-1] for tweet in df['timestamp_ms']]
 times = [tweet[2:-1] for tweet in df['created_at']]
 screen_names = [tweet[2:-1] for tweet in df['screen_name']]
 names = [tweet[2:-1] for tweet in df['name']]
+sentiment = tweets_sentiment.nltk_sentiment(texts)
 
 # teams mentioned in each tweet
 t1 = ['okc', 'thunder']
@@ -74,10 +76,10 @@ teams_mentioned = classify_teams(texts, team1, team2)
 
 out = open(gv.data_path + args[2], 'w', newline='')
 
-rows = zip(ids, langs, texts, timestamps, times, retweets, screen_names, names, teams_mentioned)
+rows = zip(ids, langs, texts, timestamps, times, retweets, screen_names, names, teams_mentioned, sentiment)
 
 csv = writer(out)
-csv.writerow(['id', 'lang', 'text', 'timestamp_ms', 'created_at', 'retweet_count', 'screen_name', 'name', 'teams_mentioned'])
+csv.writerow(['id', 'lang', 'text', 'timestamp_ms', 'created_at', 'retweet_count', 'screen_name', 'name', 'teams_mentioned', 'sentiment'])
 for row in rows:
 	values = [value for value in row]
 	csv.writerow(values)
