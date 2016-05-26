@@ -64,11 +64,11 @@ names = [tweet[2:-1] for tweet in df['name']]
 sentiment = tweets_sentiment.nltk_sentiment(texts)
 
 # teams mentioned in each tweet
-t1 = ['okc', 'thunder']
+t1 = ['raps', 'raptors']
 t1_h = ['#'+s for s in t1]
 team1 = t1 + t1_h
 
-t2 = ['gsw', 'warriors']
+t2 = ['cavs', 'cavaliers']
 t2_h = ['#'+s for s in t2]
 team2 = t2 + t2_h
 

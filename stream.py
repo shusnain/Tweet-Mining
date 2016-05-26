@@ -20,7 +20,7 @@ if __name__ == '__main__':
     auth.set_access_token(gv.twitter_oauth_token, gv.twitter_oauth_token_secret)
     stream = Stream(auth, l)
 
-    q1 = ['OKC', 'GSW', 'Thunder', 'Warriors', 'OKCvsGSW', 'GSWvsOKC']
+    q1 = ['raptors', 'raps', 'cavs', 'cavaliers', 'rapsvscavs', 'cavsvsraps']
     q2 = ['#'+s for s in q1]
     query = q1 + q2
     #This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'

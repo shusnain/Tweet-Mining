@@ -42,7 +42,7 @@ per_minute_2 = tweets_2.resample('1min').sum().fillna(0)
 per_minute_3 = tweets_3.resample('1min').sum().fillna(0)
 
 result = pd.concat([per_minute_all, per_minute_0, per_minute_1, per_minute_2, per_minute_3], axis = 1)
-result.columns = ['All', 'Neither', 'OKC Only', 'GSW Only', 'Both']
+result.columns = ['All', 'Neither', 'Raps Only', 'Cavs Only', 'Both']
 
 #chart 1
 time_chart = vincent.Line(result)
@@ -71,9 +71,9 @@ per_minute_sentiment_3 = tweets_sentiment_3.resample('1min').sum().fillna(0)
 #zeros = zeros.resample('1min').sum()
 
 # result_sentiment = pd.concat([per_minute_sentiment_all, per_minute_sentiment_0, per_minute_sentiment_1, per_minute_sentiment_2, per_minute_sentiment_3], axis = 1)
-# result_sentiment.columns = ['All', 'Neither', 'OKC Only', 'GSW Only', 'Both']
+# result_sentiment.columns = ['All', 'Neither', 'Raps Only', 'Cavs Only', 'Both']
 result_sentiment = pd.concat([per_minute_sentiment_1, per_minute_sentiment_2], axis = 1)
-result_sentiment.columns = ['OKC', 'GSW']
+result_sentiment.columns = ['Raps', 'Cavs']
 
 #chart 2
 
@@ -94,9 +94,9 @@ per_minute_sentiment_sum_3 = tweets_sentiment_3.resample('1min').sum().fillna(0)
 #zeros = zeros.resample('1min').sum()
 
 # result_sentiment = pd.concat([per_minute_sentiment_sum_all, per_minute_sentiment_sum_0, per_minute_sentiment_sum_1, per_minute_sentiment_sum_2, per_minute_sentiment_sum_3], axis = 1)
-# result_sentiment.columns = ['All', 'Neither', 'OKC Only', 'GSW Only', 'Both']
+# result_sentiment.columns = ['All', 'Neither', 'Raps Only', 'Cavs Only', 'Both']
 result_sentiment_sum = pd.concat([per_minute_sentiment_sum_1, per_minute_sentiment_sum_2], axis = 1)
-result_sentiment_sum.columns = ['OKC', 'GSW']
+result_sentiment_sum.columns = ['Raps', 'Cavs']
 
 sentiment_chart = vincent.Line(result_sentiment_sum)
 sentiment_chart.axis_titles(x='Time', y='Sentiment')
